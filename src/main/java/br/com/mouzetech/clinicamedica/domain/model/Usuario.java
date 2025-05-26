@@ -32,7 +32,7 @@ public class Usuario {
 	private String telefone;
 	
 	@Enumerated(EnumType.STRING)
-	private TipoUsuario tipoUsuario;
+	private TipoUsuario tipo;
 	
 	private Boolean ativo = Boolean.TRUE;
 }
