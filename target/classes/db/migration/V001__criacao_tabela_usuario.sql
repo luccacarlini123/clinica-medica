@@ -1,9 +1,0 @@
-CREATE TABLE usuario (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    senha VARCHAR(255) NOT NULL,
-    telefone VARCHAR(20),
-    tipo VARCHAR(50) NOT NULL,
-    ativo BOOLEAN DEFAULT TRUE
-) engine=InnoDB default charset=utf8;
