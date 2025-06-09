@@ -4,6 +4,6 @@ CREATE TABLE usuario (
     email VARCHAR(255) NOT NULL UNIQUE,
     senha VARCHAR(255) NOT NULL,
     telefone VARCHAR(20),
-    tipo VARCHAR(50) NOT NULL, -- Ex: "PACIENTE", "PROFISSIONAL", "ADMIN"
+    tipo VARCHAR(50) NOT NULL,
     ativo BOOLEAN DEFAULT TRUE
 ) engine=InnoDB default charset=utf8;

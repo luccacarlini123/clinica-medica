@@ -3,7 +3,7 @@ package br.com.mouzetech.clinicamedica.domain.model;
 public enum TipoUsuario {
 
 	ADMIN(0, "Admin"),
-	MEDICO(1, "Médico"),
+	PROFISSIONAL(1, "Profissional"),
 	RECEPCIONISTA(2, "Recepcionista"),
 	PACIENTE(3, "Paciente");
 

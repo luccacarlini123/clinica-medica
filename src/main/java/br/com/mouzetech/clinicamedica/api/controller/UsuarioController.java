@@ -1,4 +1,4 @@
-package br.com.mouzetech.clinicamedica.api;
+package br.com.mouzetech.clinicamedica.api.controller;
 
 import java.util.List;
 
