@@ -21,7 +21,6 @@ public class ConsultaService {
 	@Autowired
 	private PacienteService pacienteService;
 	
-	
 	@Transactional
 	public Consulta agendar(Consulta consulta) {
 		

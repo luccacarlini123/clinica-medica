@@ -8,4 +8,4 @@ CREATE TABLE consulta (
     
     FOREIGN KEY (agenda_id) REFERENCES agenda(id),
     FOREIGN KEY (paciente_id) REFERENCES paciente(id)
-);
+) engine=InnoDB default charset=utf8;

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import br.com.mouzetech.clinicamedica.domain.model.Agenda;
 import br.com.mouzetech.clinicamedica.domain.model.Profissional;
 import br.com.mouzetech.clinicamedica.domain.repository.AgendaRepository;
-import br.com.mouzetech.clinicamedica.domain.service.exception.ConsultaNaoEncontradoException;
+import br.com.mouzetech.clinicamedica.domain.service.exception.ConsultaNaoEncontradaException;
 import br.com.mouzetech.clinicamedica.domain.service.exception.NegocioException;
 
 @Service
@@ -25,7 +25,7 @@ public class AgendaService {
 	private ProfissionalService profissionalService;
 
 	public Agenda buscarPorIdOuFalhar(Long id) {
-		return this.agendaRepository.findById(id).orElseThrow(() -> new ConsultaNaoEncontradoException(id));
+		return this.agendaRepository.findById(id).orElseThrow(() -> new ConsultaNaoEncontradaException(id));
 	}
 	
 	@Transactional

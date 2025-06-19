@@ -10,6 +10,7 @@ delete from convenio;
 delete from paciente;
 delete from paciente_convenio;
 delete from agenda;
+delete from forma_pagamento;
 
 set foreign_key_checks = 1;
 
@@ -23,6 +24,7 @@ alter table convenio auto_increment = 1;
 alter table paciente auto_increment = 1;
 alter table paciente_convenio auto_increment = 1;
 alter table agenda auto_increment = 1;
+alter table forma_pagamento auto_increment = 1;
 
 INSERT INTO usuario (id, nome, email, senha, tipo, telefone)
 VALUES 
@@ -269,3 +271,10 @@ INSERT INTO paciente (
 ) VALUES 
 (1, null, '1990-05-14', '12345678900', 'MASCULINO', 'Carlos Eduardo Silva', null),
 (2, null, '1985-09-22', '98765432100', 'FEMININO', 'Mariana Lopes Pereira', null);
+
+insert into forma_pagamento(id, descricao)
+values (1, 'Dinheiro'),
+(2, 'Cartão de crédito'),
+(3, 'Cartão de débito'),
+(4, 'Pix'),
+(5, 'Bitcoin');
