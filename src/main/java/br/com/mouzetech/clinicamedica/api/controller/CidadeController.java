@@ -57,6 +57,7 @@ public class CidadeController {
 	}
 
 	@PostMapping
+	@ResponseStatus(value = HttpStatus.CREATED)
 	public CidadeModel salvar(@RequestBody @Valid CidadeInput cidadeInput) {
 		Cidade cidade = this.cidadeDisassembler.toEntityFromInput(cidadeInput);
 
@@ -70,6 +71,7 @@ public class CidadeController {
 	}
 
 	@PutMapping("/{cidadeId}")
+	@ResponseStatus(value = HttpStatus.OK)
 	public CidadeModel atualizar(@RequestBody @Valid CidadeInput cidadeInput,
 			@PathVariable("cidadeId") Long cidadeId) {
 		

@@ -51,6 +51,7 @@ public class EstadoController {
 	}
 
 	@PostMapping
+	@ResponseStatus(value = HttpStatus.CREATED)
 	public EstadoModel salvar(@RequestBody @Valid EstadoInput estadoInput) {
 		Estado estado = this.estadoDisassembler.toEntityFromInput(estadoInput);
 
@@ -64,6 +65,7 @@ public class EstadoController {
 	}
 	
 	@PutMapping("/{estadoId}")
+	@ResponseStatus(value = HttpStatus.OK)
 	public EstadoModel atualizar(@RequestBody @Valid EstadoInput estadoInput, @PathVariable("estadoId") Long estadoId) {
 		
 		Estado estado = this.estadoService.buscarPorIdOuFalhar(estadoId);

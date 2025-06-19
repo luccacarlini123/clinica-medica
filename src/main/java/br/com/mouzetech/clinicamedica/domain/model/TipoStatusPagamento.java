@@ -5,13 +5,13 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum TipoUsuario {
+public enum TipoStatusPagamento {
 
-	ADMIN(0, "Admin"),
-	PROFISSIONAL(1, "Profissional"),
-	RECEPCIONISTA(2, "Recepcionista"),
-	PACIENTE(3, "Paciente");
+	CANCELADO(0, "Cancelado"),
+	PENDENTE(1, "Pendente"),
+	REALIZADO(2, "Realizado");
 
 	private int codigo;
 	private String descricao;
+	
 }

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -22,11 +24,12 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 import br.com.mouzetech.clinicamedica.domain.service.exception.EntidadeNaoEncontradaException;
+import br.com.mouzetech.clinicamedica.domain.service.exception.NegocioException;
 
 @RestControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
-	private static final String MSG_ERRO_DE_VALIDAÇÃO_DE_DADOS = "Ocorreu um erro de validação de dados";
+	private static final String MSG_ERRO_DE_VALIDACAO_DE_DADOS = "Ocorreu um erro de validação de dados";
 
 	private static final String MSG_GENERICA_ERRO_USUARIO_FINAL = "Ocorreu um problema inesperado no sistema, tente novamente daqui a pouco, se o erro persistir entre em contato com o administrador do sistema.";
 
@@ -44,12 +47,35 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		return this.handleExceptionInternal(ex, problem, new HttpHeaders(), statusHttp, request);
 	}
 	
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request) {
+
+		HttpStatus statusHttp = HttpStatus.INTERNAL_SERVER_ERROR;
+
+		Problem problem = this.createProblemBuilder(statusHttp, MSG_GENERICA_ERRO_USUARIO_FINAL, ProblemType.ERRO_DE_SISTEMA)
+				.build();
+
+		return this.handleExceptionInternal(ex, problem, new HttpHeaders(), statusHttp, request);
+	}
+	
+	@Override
+	protected ResponseEntity<Object> handleMissingPathVariable(MissingPathVariableException ex, HttpHeaders headers,
+			HttpStatus status, WebRequest request) {
+		
+		String userMessage = "O parâmetro '" + ex.getVariableName() + "' mapeado não é válido";
+
+		Problem problem = this.createProblemBuilder(status, ex.getMessage(), ProblemType.ERRO_NEGOCIO)
+				.userMessage(userMessage).build();
+
+		return this.handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+	}
+	
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 
 		Problem problemBuilder = this
-				.createProblemBuilder(status, MSG_ERRO_DE_VALIDAÇÃO_DE_DADOS, ProblemType.DADOS_INVÁLIDOS)
+				.createProblemBuilder(status, MSG_ERRO_DE_VALIDACAO_DE_DADOS, ProblemType.DADOS_INVÁLIDOS)
 				.fieldErrors(new ArrayList<>()).build();
 
 		for (ObjectError objectError : ex.getBindingResult().getAllErrors()) {
@@ -58,8 +84,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 			String name = objectError.getObjectName();
 
-			if (objectError instanceof FieldError) {
-				name = ((FieldError) objectError).getField();
+			if (objectError instanceof FieldError fieldError) {
+				name = fieldError.getField();
 			}
 
 			problemBuilder.adicionarFieldError(name, message);
@@ -70,7 +96,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 	
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
-	public ResponseEntity<?> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex,
+	public ResponseEntity<Object> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex,
 			WebRequest request) {
 
 		String mensagemExcecao = String.format(
@@ -85,6 +111,16 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 						new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
 	}
 	
+	@ExceptionHandler(NegocioException.class)
+	public ResponseEntity<Object> handleNegocioException(NegocioException ex, WebRequest request) {
+
+		return this
+				.handleExceptionInternal(ex,
+						createProblemBuilder(HttpStatus.BAD_REQUEST, ex.getMessage(), ProblemType.ERRO_NEGOCIO)
+								.userMessage(ex.getMessage()).build(),
+						new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+	}
+	
 	@Override
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -93,11 +129,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		
 		Throwable causa = ex.getCause();
 		
-		if(causa instanceof InvalidFormatException) {
-			return this.handleInvalidFormatException((InvalidFormatException) causa, headers, status, request, problemType);
+		if(causa instanceof InvalidFormatException ife) {
+			return this.handleInvalidFormatException(ife, headers, status, request, problemType);
 		}
 		
-		Problem problemBuilder = this.createProblemBuilder(status, MSG_ERRO_DE_VALIDAÇÃO_DE_DADOS, problemType).build();
+		Problem problemBuilder = this.createProblemBuilder(status, MSG_ERRO_DE_VALIDACAO_DE_DADOS, problemType).build();
 		
 		return this.handleExceptionInternal(ex, problemBuilder, headers, status, request);
 	}
@@ -107,7 +143,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		
 		String userMessage = "O valor '" + ex.getValue() + "' não é aceito pelo tipo esperado '" + ex.getTargetType().getSimpleName() + "'";
 		
-		Problem problem = this.createProblemBuilder(status, MSG_ERRO_DE_VALIDAÇÃO_DE_DADOS, problemType)
+		Problem problem = this.createProblemBuilder(status, MSG_ERRO_DE_VALIDACAO_DE_DADOS, problemType)
 				.userMessage(userMessage)
 				.build();
 		
@@ -122,13 +158,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		if (body == null) {
 
 			body = Problem.builder().title(ProblemType.ERRO_DE_SISTEMA.getTitle()).timeStamp(OffsetDateTime.now())
-					.type(ProblemType.ERRO_DE_SISTEMA.getType()).detail(status.getReasonPhrase())
+					.type(ProblemType.ERRO_DE_SISTEMA.getType()).detail(ex.getMessage())
 					.userMessage(MSG_GENERICA_ERRO_USUARIO_FINAL).status(status.value()).build();
 
-		} else if (body instanceof String) {
+		} else if (body instanceof String s) {
 
 			body = Problem.builder().title(ProblemType.ERRO_DE_SISTEMA.getType())
-					.type(ProblemType.ERRO_DE_SISTEMA.getType()).timeStamp(OffsetDateTime.now()).detail((String) body)
+					.type(ProblemType.ERRO_DE_SISTEMA.getType()).timeStamp(OffsetDateTime.now()).detail(s)
 					.userMessage(MSG_GENERICA_ERRO_USUARIO_FINAL).status(status.value()).build();
 		}
 

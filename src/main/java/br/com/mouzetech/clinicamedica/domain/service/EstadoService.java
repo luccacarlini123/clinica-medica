@@ -22,7 +22,8 @@ public class EstadoService {
 	public Estado buscarPorIdOuFalhar(Long id) {
 		return this.estadoRepository.findById(id).orElseThrow(() -> new EstadoNaoEncontradoException(id));
 	}
-	
+
+	@Transactional
 	public void excluirPorId(Long id) {
 		this.estadoRepository.delete(this.buscarPorIdOuFalhar(id));
 	}

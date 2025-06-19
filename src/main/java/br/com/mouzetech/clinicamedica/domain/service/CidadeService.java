@@ -47,7 +47,8 @@ public class CidadeService {
 	public Cidade buscarPorIdOuFalhar(Long id) {
 		return this.cidadeRepository.findById(id).orElseThrow(() -> new CidadeNaoEncontradoException(id));
 	}
-	
+
+	@Transactional
 	public void excluirPorId(Long id) {
 		this.cidadeRepository.delete(this.buscarPorIdOuFalhar(id));
 	}
