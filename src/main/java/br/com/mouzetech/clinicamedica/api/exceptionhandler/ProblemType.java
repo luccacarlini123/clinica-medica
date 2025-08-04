@@ -6,8 +6,9 @@ public enum ProblemType {
 	ENTIDADE_EM_USO("/entidade-em-uso", "Entidade em uso"),
 	PARAMETRO_INVALIDO("/parametro-invalido", "Parâmetro inválido"),
 	ERRO_DE_SISTEMA("/erro-de-sistema", "Erro de sistema"),
-	DADOS_INVÁLIDOS("/dados-invalidos", "Dados inválidos"),
-	ERRO_NEGOCIO("/erro-negocio", "Erro de negócio");
+	DADOS_INVALIDOS("/dados-invalidos", "Dados inválidos"),
+	ERRO_NEGOCIO("/erro-negocio", "Erro de negócio"),
+	SEM_AUTORIZACAO("/sem-autorizacao", "Sem Autorização");
 	
 	private String type;
 	private String title;

@@ -11,6 +11,8 @@ delete from paciente;
 delete from paciente_convenio;
 delete from agenda;
 delete from forma_pagamento;
+delete from consulta;
+delete from pagamento;
 
 set foreign_key_checks = 1;
 
@@ -25,6 +27,8 @@ alter table paciente auto_increment = 1;
 alter table paciente_convenio auto_increment = 1;
 alter table agenda auto_increment = 1;
 alter table forma_pagamento auto_increment = 1;
+alter table consulta auto_increment = 1;
+alter table pagamento auto_increment = 1;
 
 INSERT INTO usuario (id, nome, email, senha, tipo, telefone)
 VALUES 
@@ -278,3 +282,6 @@ values (1, 'Dinheiro'),
 (3, 'Cartão de débito'),
 (4, 'Pix'),
 (5, 'Bitcoin');
+
+insert into agenda(id, medico_id, data, hora_inicio, hora_fim)
+values(1, 1, '2025-05-20', '15:00:00', '15:30:00');

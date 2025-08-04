@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -30,11 +31,8 @@ public class Consulta {
 	private Paciente paciente;
 
 	@ManyToOne
-	@JoinColumn(nullable = false, unique = true)
+	@JoinColumn(nullable = true, unique = true)
 	private Agenda agenda;
-
-	@Column(nullable = false, name = "data_hora")
-	private LocalDateTime dataHora;
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
@@ -42,5 +40,30 @@ public class Consulta {
 
 	@Column(nullable = true)
 	private String observacoes;
+	
+	@Column(nullable = false)
+	private LocalDateTime dataHoraRegistro;
+	
+	@PrePersist
+	public void prePersist() {
+		this.dataHoraRegistro = LocalDateTime.now();
+	}
+	
+	public void desmarcar() {
+		this.setAgenda(null);
+		this.setStatus(TipoStatusConsulta.CANCELADA);
+	}
+	
+	public boolean jaFoiRealizada() {
+		return TipoStatusConsulta.REALIZADA.equals(this.getStatus());
+	}
+	
+	public boolean jaFoiDesmarcada() {
+		return TipoStatusConsulta.CANCELADA.equals(this.getStatus());
+	}
+	
+	public void finalizar() {
+		this.setStatus(TipoStatusConsulta.REALIZADA);
+	}
 
 }

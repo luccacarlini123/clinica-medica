@@ -1,10 +1,9 @@
 package br.com.mouzetech.clinicamedica.api.model.input;
 
-import java.time.LocalDateTime;
-
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import br.com.mouzetech.clinicamedica.domain.model.TipoStatusConsulta;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,18 +11,21 @@ import lombok.Setter;
 @Setter
 public class ConsultaInput {
 
+	@Valid
 	@NotNull
 	private PacienteIdInput paciente;
 
+	@Valid
 	@NotNull
 	private AgendaIdInput agenda;
 
 	@NotNull
-	private LocalDateTime dataHora;
+	@Min(1)
+	private Double valor;
 
+	@Valid
 	@NotNull
-	private TipoStatusConsulta status;
+	private FormaPagamentoIdInput formaPagamento;
 
 	private String observacoes;
-
 }

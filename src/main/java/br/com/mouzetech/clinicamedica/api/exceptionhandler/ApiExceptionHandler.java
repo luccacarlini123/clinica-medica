@@ -75,7 +75,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 
 		Problem problemBuilder = this
-				.createProblemBuilder(status, MSG_ERRO_DE_VALIDACAO_DE_DADOS, ProblemType.DADOS_INVÁLIDOS)
+				.createProblemBuilder(status, MSG_ERRO_DE_VALIDACAO_DE_DADOS, ProblemType.DADOS_INVALIDOS)
 				.fieldErrors(new ArrayList<>()).build();
 
 		for (ObjectError objectError : ex.getBindingResult().getAllErrors()) {
@@ -125,7 +125,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		
-		ProblemType problemType = ProblemType.DADOS_INVÁLIDOS;
+		ProblemType problemType = ProblemType.DADOS_INVALIDOS;
 		
 		Throwable causa = ex.getCause();
 		
