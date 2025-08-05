@@ -1,4 +1,4 @@
-package br.com.mouzetech.clinicamedica.core.config.security;
+package br.com.mouzetech.clinicamedica.core.security.resourceserver;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

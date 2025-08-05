@@ -1,4 +1,4 @@
-package br.com.mouzetech.clinicamedica.core.config.security;
+package br.com.mouzetech.clinicamedica.core.security.resourceserver;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 

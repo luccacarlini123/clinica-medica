@@ -1,4 +1,4 @@
-package br.com.mouzetech.clinicamedica.core.config.modelmapper;
+package br.com.mouzetech.clinicamedica.core.modelmapper;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

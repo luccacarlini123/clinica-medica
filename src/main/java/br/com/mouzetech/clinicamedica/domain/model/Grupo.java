@@ -30,4 +30,12 @@ public class Grupo {
 	@ManyToMany
 	@JoinTable(name = "grupo_permissao", joinColumns = @JoinColumn(name = "grupo_id"), inverseJoinColumns = @JoinColumn(name = "permissao_id"))
 	private Set<Permissao> permissoes;
+
+	public void associarPermissao(Permissao permissao) {
+		this.permissoes.add(permissao);
+	}
+
+	public void desassociarPermissao(Permissao permissao) {
+		this.permissoes.remove(permissao);
+	}
 }
