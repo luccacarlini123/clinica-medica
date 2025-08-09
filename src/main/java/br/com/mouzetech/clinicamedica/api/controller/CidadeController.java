@@ -21,6 +21,7 @@ import br.com.mouzetech.clinicamedica.api.model.assembler.CidadeAssembler;
 import br.com.mouzetech.clinicamedica.api.model.disassembler.CidadeDisassembler;
 import br.com.mouzetech.clinicamedica.api.model.input.CidadeInput;
 import br.com.mouzetech.clinicamedica.api.model.representation.CidadeModel;
+import br.com.mouzetech.clinicamedica.core.security.resourceserver.CheckSecurity;
 import br.com.mouzetech.clinicamedica.domain.model.Cidade;
 import br.com.mouzetech.clinicamedica.domain.repository.CidadeRepository;
 import br.com.mouzetech.clinicamedica.domain.service.CidadeService;
@@ -45,17 +46,20 @@ public class CidadeController {
 	@Autowired
 	private CidadeDisassembler cidadeDisassembler;
 
+	@CheckSecurity.EstaAutenticadoParaLeitura
 	@GetMapping
 	public List<CidadeModel> buscarTodos(@RequestParam(value = "estado_id", required = true) Long estadoId) {
 		return this.cidadeAssembler.toCollectionModel(
 				this.cidadeRepository.findByEstado(this.estadoService.buscarPorIdOuFalhar(estadoId)));
 	}
 
+	@CheckSecurity.EstaAutenticadoParaLeitura
 	@GetMapping("/{cidadeId}")
 	public CidadeModel buscarPorId(@PathVariable("cidadeId") Long cidadeId) {
 		return this.cidadeAssembler.toModel(this.cidadeService.buscarPorIdOuFalhar(cidadeId));
 	}
 
+	@CheckSecurity.PodeGerenciarCadastros
 	@PostMapping
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public CidadeModel salvar(@RequestBody @Valid CidadeInput cidadeInput) {
@@ -64,12 +68,14 @@ public class CidadeController {
 		return this.cidadeAssembler.toModel(this.cidadeService.salvar(cidade));
 	}
 
+	@CheckSecurity.PodeGerenciarCadastros
 	@DeleteMapping("/{cidadeId}")
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void excluirPorId(@PathVariable("cidadeId") Long cidadeId) {
 		this.cidadeService.excluirPorId(cidadeId);
 	}
 
+	@CheckSecurity.PodeGerenciarCadastros
 	@PutMapping("/{cidadeId}")
 	@ResponseStatus(value = HttpStatus.OK)
 	public CidadeModel atualizar(@RequestBody @Valid CidadeInput cidadeInput,

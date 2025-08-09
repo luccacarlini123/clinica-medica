@@ -8,7 +8,8 @@ public enum ProblemType {
 	ERRO_DE_SISTEMA("/erro-de-sistema", "Erro de sistema"),
 	DADOS_INVALIDOS("/dados-invalidos", "Dados inválidos"),
 	ERRO_NEGOCIO("/erro-negocio", "Erro de negócio"),
-	SEM_AUTORIZACAO("/sem-autorizacao", "Sem Autorização");
+	SEM_AUTORIZACAO("/sem-autorizacao", "Sem Autorização"),
+	ACESSO_NEGADO("/acesso-negado", "Acesso negado");
 	
 	private String type;
 	private String title;

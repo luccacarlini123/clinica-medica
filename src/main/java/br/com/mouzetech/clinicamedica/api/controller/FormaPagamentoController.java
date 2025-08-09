@@ -20,6 +20,7 @@ import br.com.mouzetech.clinicamedica.api.model.assembler.FormaPagamentoAssemble
 import br.com.mouzetech.clinicamedica.api.model.disassembler.FormaPagamentoDisassembler;
 import br.com.mouzetech.clinicamedica.api.model.input.FormaPagamentoInput;
 import br.com.mouzetech.clinicamedica.api.model.representation.FormaPagamentoModel;
+import br.com.mouzetech.clinicamedica.core.security.resourceserver.CheckSecurity;
 import br.com.mouzetech.clinicamedica.domain.model.FormaPagamento;
 import br.com.mouzetech.clinicamedica.domain.repository.FormaPagamentoRepository;
 import br.com.mouzetech.clinicamedica.domain.service.FormaPagamentoService;
@@ -40,16 +41,19 @@ public class FormaPagamentoController {
 	@Autowired
 	private FormaPagamentoDisassembler formaPagamentoDisassembler;
 
+	@CheckSecurity.EstaAutenticadoParaLeitura
 	@GetMapping
 	public List<FormaPagamentoModel> buscarTodos() {
 		return this.formaPagamentoAssembler.toCollectionModel(this.formaPagamentoRepository.findAll());
 	}
 
+	@CheckSecurity.EstaAutenticadoParaLeitura
 	@GetMapping("/{formaPagamentoId}")
 	public FormaPagamentoModel buscarPorId(@PathVariable("formaPagamentoId") Long formaPagamentoId) {
 		return this.formaPagamentoAssembler.toModel(this.formaPagamentoService.buscarPorIdOuFalhar(formaPagamentoId));
 	}
 
+	@CheckSecurity.PodeGerenciarCadastros
 	@PostMapping
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public FormaPagamentoModel salvar(@RequestBody @Valid FormaPagamentoInput formaPagamentoInput) {
@@ -58,12 +62,14 @@ public class FormaPagamentoController {
 		return this.formaPagamentoAssembler.toModel(this.formaPagamentoService.salvar(formaPagamento));
 	}
 
+	@CheckSecurity.PodeGerenciarCadastros
 	@DeleteMapping("/{formaPagamentoId}")
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void excluirPorId(@PathVariable("formaPagamentoId") Long formaPagamentoId) {
 		this.formaPagamentoService.excluirPorId(formaPagamentoId);
 	}
 
+	@CheckSecurity.PodeGerenciarCadastros
 	@PutMapping("/{formaPagamentoId}")
 	@ResponseStatus(value = HttpStatus.OK)
 	public FormaPagamentoModel atualizar(@RequestBody @Valid FormaPagamentoInput formaPagamentoInput,

@@ -20,6 +20,7 @@ import br.com.mouzetech.clinicamedica.api.model.assembler.ConvenioAssembler;
 import br.com.mouzetech.clinicamedica.api.model.disassembler.ConvenioDisassembler;
 import br.com.mouzetech.clinicamedica.api.model.input.ConvenioInput;
 import br.com.mouzetech.clinicamedica.api.model.representation.ConvenioModel;
+import br.com.mouzetech.clinicamedica.core.security.resourceserver.CheckSecurity;
 import br.com.mouzetech.clinicamedica.domain.model.Convenio;
 import br.com.mouzetech.clinicamedica.domain.repository.ConvenioRepository;
 import br.com.mouzetech.clinicamedica.domain.service.ConvenioService;
@@ -40,16 +41,19 @@ public class ConvenioController {
 	@Autowired
 	private ConvenioDisassembler convenioDisassembler;
 
+	@CheckSecurity.EstaAutenticadoParaLeitura
 	@GetMapping
 	public List<ConvenioModel> buscarTodos() {
 		return this.convenioAssembler.toCollectionModel(this.convenioRepository.findAll());
 	}
 
+	@CheckSecurity.EstaAutenticadoParaLeitura
 	@GetMapping("/{convenioId}")
 	public ConvenioModel buscarPorId(@PathVariable("convenioId") Long convenioId) {
 		return this.convenioAssembler.toModel(this.convenioService.buscarPorIdOuFalhar(convenioId));
 	}
 
+	@CheckSecurity.PodeGerenciarCadastros
 	@PostMapping
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public ConvenioModel salvar(@RequestBody @Valid ConvenioInput convenioInput) {
@@ -58,12 +62,14 @@ public class ConvenioController {
 		return this.convenioAssembler.toModel(this.convenioService.salvar(convenio));
 	}
 
+	@CheckSecurity.PodeGerenciarCadastros
 	@DeleteMapping("/{convenioId}")
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void excluirPorId(@PathVariable("convenioId") Long convenioId) {
 		this.convenioService.excluirPorId(convenioId);
 	}
 
+	@CheckSecurity.PodeGerenciarCadastros
 	@PutMapping("/{convenioId}")
 	@ResponseStatus(value = HttpStatus.OK)
 	public ConvenioModel atualizar(@RequestBody @Valid ConvenioInput convenioInput,

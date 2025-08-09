@@ -18,10 +18,12 @@ import br.com.mouzetech.clinicamedica.api.model.assembler.PermissaoAssembler;
 import br.com.mouzetech.clinicamedica.api.model.disassembler.PermissaoDisassembler;
 import br.com.mouzetech.clinicamedica.api.model.input.PermissaoInput;
 import br.com.mouzetech.clinicamedica.api.model.representation.PermissaoModel;
+import br.com.mouzetech.clinicamedica.core.security.resourceserver.CheckSecurity;
 import br.com.mouzetech.clinicamedica.domain.model.Permissao;
 import br.com.mouzetech.clinicamedica.domain.repository.PermissaoRepository;
 import br.com.mouzetech.clinicamedica.domain.service.PermissaoService;
 
+@CheckSecurity.PodeGerenciarCadastros
 @RestController
 @RequestMapping("/permissoes")
 public class PermissaoController {

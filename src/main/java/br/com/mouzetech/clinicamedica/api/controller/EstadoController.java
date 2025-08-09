@@ -20,6 +20,7 @@ import br.com.mouzetech.clinicamedica.api.model.assembler.EstadoAssembler;
 import br.com.mouzetech.clinicamedica.api.model.disassembler.EstadoDisassembler;
 import br.com.mouzetech.clinicamedica.api.model.input.EstadoInput;
 import br.com.mouzetech.clinicamedica.api.model.representation.EstadoModel;
+import br.com.mouzetech.clinicamedica.core.security.resourceserver.CheckSecurity;
 import br.com.mouzetech.clinicamedica.domain.model.Estado;
 import br.com.mouzetech.clinicamedica.domain.repository.EstadoRepository;
 import br.com.mouzetech.clinicamedica.domain.service.EstadoService;
@@ -40,16 +41,19 @@ public class EstadoController {
 	@Autowired
 	private EstadoDisassembler estadoDisassembler;
 
+	@CheckSecurity.EstaAutenticadoParaLeitura
 	@GetMapping
 	public List<EstadoModel> buscarTodos() {
 		return this.estadoAssembler.toCollectionModel(this.estadoRepository.findAll());
 	}
 
+	@CheckSecurity.EstaAutenticadoParaLeitura
 	@GetMapping("/{estadoId}")
 	public EstadoModel buscarPorId(@PathVariable("estadoId") Long estadoId) {
 		return this.estadoAssembler.toModel(this.estadoService.buscarPorIdOuFalhar(estadoId));
 	}
 
+	@CheckSecurity.PodeGerenciarCadastros
 	@PostMapping
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public EstadoModel salvar(@RequestBody @Valid EstadoInput estadoInput) {
@@ -58,12 +62,14 @@ public class EstadoController {
 		return this.estadoAssembler.toModel(this.estadoService.salvar(estado));
 	}
 
+	@CheckSecurity.PodeGerenciarCadastros
 	@DeleteMapping("/{estadoId}")
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void excluirPorId(@PathVariable("estadoId") Long estadoId) {
 		this.estadoService.excluirPorId(estadoId);
 	}
 	
+	@CheckSecurity.PodeGerenciarCadastros
 	@PutMapping("/{estadoId}")
 	@ResponseStatus(value = HttpStatus.OK)
 	public EstadoModel atualizar(@RequestBody @Valid EstadoInput estadoInput, @PathVariable("estadoId") Long estadoId) {

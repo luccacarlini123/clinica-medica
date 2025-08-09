@@ -15,12 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.mouzetech.clinicamedica.api.model.assembler.PacienteConvenioAssembler;
 import br.com.mouzetech.clinicamedica.api.model.input.PacienteConvenioInput;
 import br.com.mouzetech.clinicamedica.api.model.representation.PacienteConvenioModel;
+import br.com.mouzetech.clinicamedica.core.security.resourceserver.CheckSecurity;
 import br.com.mouzetech.clinicamedica.domain.service.PacienteConvenioService;
 
+@CheckSecurity.PodeGerenciarPacientes
 @RestController
 @RequestMapping("/pacientes")
 public class PacienteConvenioController {
-	
+
 	@Autowired
 	private PacienteConvenioService pacienteConvenioService;
 
@@ -31,7 +33,7 @@ public class PacienteConvenioController {
 	public PacienteConvenioModel salvar(@RequestBody @Valid PacienteConvenioInput pacienteConvenioInput) {
 		return this.pacienteConvenioAssembler.toModel(this.pacienteConvenioService.salvar(pacienteConvenioInput));
 	}
-	
+
 	@GetMapping("/{idPaciente}/convenios")
 	public List<PacienteConvenioModel> buscarConveniosDoPaciente(@PathVariable("idPaciente") Long pacienteId) {
 		return this.pacienteConvenioAssembler

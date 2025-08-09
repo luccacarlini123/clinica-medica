@@ -14,8 +14,6 @@ public class UsuarioModel {
 
 	private String email;
 
-	private String senha;
-
 	private String telefone;
 
 	private TipoUsuario tipo;

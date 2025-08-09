@@ -20,6 +20,7 @@ import br.com.mouzetech.clinicamedica.api.model.assembler.EspecialidadeAssembler
 import br.com.mouzetech.clinicamedica.api.model.disassembler.EspecialidadeDisassembler;
 import br.com.mouzetech.clinicamedica.api.model.input.EspecialidadeInput;
 import br.com.mouzetech.clinicamedica.api.model.representation.EspecialidadeModel;
+import br.com.mouzetech.clinicamedica.core.security.resourceserver.CheckSecurity;
 import br.com.mouzetech.clinicamedica.domain.model.Especialidade;
 import br.com.mouzetech.clinicamedica.domain.repository.EspecialidadeRepository;
 import br.com.mouzetech.clinicamedica.domain.service.EspecialidadeService;
@@ -40,16 +41,19 @@ public class EspecialidadeController {
 	@Autowired
 	private EspecialidadeDisassembler especialidadeDisassembler;
 
+	@CheckSecurity.EstaAutenticadoParaLeitura
 	@GetMapping
 	public List<EspecialidadeModel> buscarTodos() {
 		return this.especialidadeAssembler.toCollectionModel(this.especialidadeRepository.findAll());
 	}
 
+	@CheckSecurity.EstaAutenticadoParaLeitura
 	@GetMapping("/{especialidadeId}")
 	public EspecialidadeModel buscarPorId(@PathVariable("especialidadeId") Long especialidadeId) {
 		return this.especialidadeAssembler.toModel(this.especialidadeService.buscarPorIdOuFalhar(especialidadeId));
 	}
 
+	@CheckSecurity.PodeGerenciarCadastros
 	@PostMapping
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public EspecialidadeModel salvar(@RequestBody @Valid EspecialidadeInput especialidadeInput) {
@@ -58,12 +62,14 @@ public class EspecialidadeController {
 		return this.especialidadeAssembler.toModel(this.especialidadeService.salvar(especialidade));
 	}
 
+	@CheckSecurity.PodeGerenciarCadastros
 	@DeleteMapping("/{especialidadeId}")
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void excluirPorId(@PathVariable("especialidadeId") Long especialidadeId) {
 		this.especialidadeService.excluirPorId(especialidadeId);
 	}
 
+	@CheckSecurity.PodeGerenciarCadastros
 	@PutMapping("/{especialidadeId}")
 	@ResponseStatus(value = HttpStatus.OK)
 	public EspecialidadeModel atualizar(@RequestBody @Valid EspecialidadeInput especialidadeInput,

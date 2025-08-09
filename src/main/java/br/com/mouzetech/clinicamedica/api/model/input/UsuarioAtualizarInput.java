@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UsuarioInput {
+public class UsuarioAtualizarInput {
 
 	@NotBlank
 	private String nome;
@@ -18,9 +18,6 @@ public class UsuarioInput {
 	@Email
 	@NotBlank
 	private String email;
-
-	@NotBlank
-	private String senha;
 
 	@NotBlank
 	private String telefone;

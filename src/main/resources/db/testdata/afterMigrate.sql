@@ -13,6 +13,10 @@ delete from agenda;
 delete from forma_pagamento;
 delete from consulta;
 delete from pagamento;
+delete from grupo;
+delete from permissao;
+delete from grupo_permissao;
+delete from grupo_usuario; 
 
 set foreign_key_checks = 1;
 
@@ -29,13 +33,45 @@ alter table agenda auto_increment = 1;
 alter table forma_pagamento auto_increment = 1;
 alter table consulta auto_increment = 1;
 alter table pagamento auto_increment = 1;
+alter table grupo auto_increment = 1;
+alter table permissao auto_increment = 1;
+alter table grupo_permissao auto_increment = 1;
+alter table grupo_usuario auto_increment = 1;
 
 INSERT INTO usuario (id, nome, email, senha, tipo, telefone)
 VALUES 
-  (1, 'João Souza', 'joao.souza@clinica.com', '123', 'PROFISSIONAL', 21992202450),
-  (2, 'Mariana Oliveira', 'mariana.oliveira@clinica.com', '123', 'RECEPCIONISTA', null),
-  (3, 'Carlos Mendes', 'carlos.mendes@clinica.com', '123', 'PROFISSIONAL', 21996587803);
-  
+  (1, 'Lucca Carlini', 'lucca.adm@clinica.com', '$2a$12$viMi16ApU5PCRfLgEYa9qejWdO01m5FrSHjZIHTlWqTHJVcAU4JVS', 'ADMIN', 21992202450),
+  (2, 'João Souza', 'joao.ger@clinica.com', '$2a$12$viMi16ApU5PCRfLgEYa9qejWdO01m5FrSHjZIHTlWqTHJVcAU4JVS', 'PROFISSIONAL', 21992202450),
+  (3, 'Mariana Oliveira', 'mariana.atd@clinica.com', '$2a$12$viMi16ApU5PCRfLgEYa9qejWdO01m5FrSHjZIHTlWqTHJVcAU4JVS', 'RECEPCIONISTA', null),
+  (4, 'Carlos Mendes', 'carlos.prp@clinica.com', '$2a$12$viMi16ApU5PCRfLgEYa9qejWdO01m5FrSHjZIHTlWqTHJVcAU4JVS', 'PROFISSIONAL', 21996587803);
+
+INSERT INTO grupo (id, nome)
+VALUES
+	(1, 'Propietários'), (2, 'Administradores'), (3, 'Atendentes'), (4, 'Gerentes');
+
+INSERT INTO grupo_usuario(grupo_id, usuario_id)
+VALUES (1, 4), (2, 1), (3, 3), (4, 2);
+
+INSERT INTO permissao (id, nome, descricao)
+VALUES
+	(1, 'GERENCIAR_CADASTROS_GERAIS', 'Pode gerenciar todos os cadastros do sistema'), (2, 'GERENCIAR_PACIENTES', 'Pode gerenciar pacientes'), (3, 'GERENCIAR_AGENDAS_E_CONSULTAS', 'Pode gerenciar agendas e consultas dos médicos/pacientes'), (4, 'GERENCIAR_PROFISSIONAIS', 'Pode gerenciar os profissionais da empresa');
+	
+#Permissões Proprietários
+INSERT INTO grupo_permissao (grupo_id, permissao_id)
+select 1, id from permissao;
+
+#Permissões Administradores
+INSERT INTO grupo_permissao (grupo_id, permissao_id)
+select 2, id from permissao;
+
+#Permissões Atendentes
+INSERT INTO grupo_permissao (grupo_id, permissao_id)
+select 3, id from permissao where id in (2, 3);
+
+#Permissões Gerentes
+INSERT INTO grupo_permissao (grupo_id, permissao_id)
+select 4, id from permissao;
+
 INSERT INTO estado (id, nome, sigla) VALUES
 (1, 'Acre', 'AC'),
 (2, 'Alagoas', 'AL'),

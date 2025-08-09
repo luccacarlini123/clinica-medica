@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -45,6 +46,15 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 				.build();
 
 		return this.handleExceptionInternal(ex, problem, new HttpHeaders(), statusHttp, request);
+	}
+	
+	@ExceptionHandler(AccessDeniedException.class)
+	public ResponseEntity<?> tratarAccessDeniedException(AccessDeniedException ex, WebRequest request) {
+
+		Problem problem = createProblemBuilder(HttpStatus.FORBIDDEN, "Access is denied", ProblemType.ACESSO_NEGADO)
+				.userMessage("Você não possui permissão para executar essa operação").build();
+
+		return this.handleExceptionInternal(ex, problem, new HttpHeaders(), HttpStatus.FORBIDDEN, request);
 	}
 	
 	@ExceptionHandler(DataIntegrityViolationException.class)

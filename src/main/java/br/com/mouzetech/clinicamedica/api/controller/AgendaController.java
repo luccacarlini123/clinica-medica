@@ -18,8 +18,10 @@ import br.com.mouzetech.clinicamedica.api.model.assembler.AgendaAssembler;
 import br.com.mouzetech.clinicamedica.api.model.disassembler.AgendaDisassembler;
 import br.com.mouzetech.clinicamedica.api.model.input.AgendaInput;
 import br.com.mouzetech.clinicamedica.api.model.representation.AgendaModel;
+import br.com.mouzetech.clinicamedica.core.security.resourceserver.CheckSecurity;
 import br.com.mouzetech.clinicamedica.domain.service.AgendaService;
 
+@CheckSecurity.PodeGerenciarAgendasConsultas
 @RestController
 @RequestMapping("/agendas")
 public class AgendaController {

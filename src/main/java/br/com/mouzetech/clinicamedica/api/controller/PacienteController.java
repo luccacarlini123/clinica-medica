@@ -20,10 +20,12 @@ import br.com.mouzetech.clinicamedica.api.model.assembler.PacienteAssembler;
 import br.com.mouzetech.clinicamedica.api.model.disassembler.PacienteDisassembler;
 import br.com.mouzetech.clinicamedica.api.model.input.PacienteInput;
 import br.com.mouzetech.clinicamedica.api.model.representation.PacienteModel;
+import br.com.mouzetech.clinicamedica.core.security.resourceserver.CheckSecurity;
 import br.com.mouzetech.clinicamedica.domain.model.Paciente;
 import br.com.mouzetech.clinicamedica.domain.repository.PacienteRepository;
 import br.com.mouzetech.clinicamedica.domain.service.PacienteService;
 
+@CheckSecurity.PodeGerenciarPacientes
 @RestController
 @RequestMapping("/pacientes")
 public class PacienteController {

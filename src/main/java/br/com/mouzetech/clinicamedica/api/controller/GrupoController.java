@@ -18,10 +18,12 @@ import br.com.mouzetech.clinicamedica.api.model.assembler.GrupoAssembler;
 import br.com.mouzetech.clinicamedica.api.model.disassembler.GrupoDisassembler;
 import br.com.mouzetech.clinicamedica.api.model.input.GrupoInput;
 import br.com.mouzetech.clinicamedica.api.model.representation.GrupoModel;
+import br.com.mouzetech.clinicamedica.core.security.resourceserver.CheckSecurity;
 import br.com.mouzetech.clinicamedica.domain.model.Grupo;
 import br.com.mouzetech.clinicamedica.domain.repository.GrupoRepository;
 import br.com.mouzetech.clinicamedica.domain.service.GrupoService;
 
+@CheckSecurity.PodeGerenciarCadastros
 @RestController
 @RequestMapping("/grupos")
 public class GrupoController {

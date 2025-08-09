@@ -20,10 +20,12 @@ import br.com.mouzetech.clinicamedica.api.model.assembler.ProfissionalAssembler;
 import br.com.mouzetech.clinicamedica.api.model.disassembler.ProfissionalDisassembler;
 import br.com.mouzetech.clinicamedica.api.model.input.ProfissionalInput;
 import br.com.mouzetech.clinicamedica.api.model.representation.ProfissionalModel;
+import br.com.mouzetech.clinicamedica.core.security.resourceserver.CheckSecurity;
 import br.com.mouzetech.clinicamedica.domain.model.Profissional;
 import br.com.mouzetech.clinicamedica.domain.repository.ProfissionalRepository;
 import br.com.mouzetech.clinicamedica.domain.service.ProfissionalService;
 
+@CheckSecurity.PodeGerenciarProfissionais
 @RestController
 @RequestMapping("/profissionais")
 public class ProfissionalController {

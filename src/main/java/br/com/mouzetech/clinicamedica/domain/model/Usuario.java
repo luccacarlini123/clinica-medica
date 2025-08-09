@@ -42,6 +42,8 @@ public class Usuario {
 	private Boolean ativo = Boolean.TRUE;
 
 	@ManyToMany
-	@JoinTable(name = "grupo_usuario", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "grupo_id"))
+	@JoinTable(name = "grupo_usuario",
+		joinColumns = @JoinColumn(name = "usuario_id"),
+		inverseJoinColumns = @JoinColumn(name = "grupo_id"))
 	private Set<Grupo> grupos;
 }

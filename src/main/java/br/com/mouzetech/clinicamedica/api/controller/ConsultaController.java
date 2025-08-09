@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.mouzetech.clinicamedica.api.model.assembler.ConsultaAssembler;
 import br.com.mouzetech.clinicamedica.api.model.input.ConsultaInput;
 import br.com.mouzetech.clinicamedica.api.model.representation.ConsultaModel;
+import br.com.mouzetech.clinicamedica.core.security.resourceserver.CheckSecurity;
 import br.com.mouzetech.clinicamedica.domain.service.ConsultaService;
 
+@CheckSecurity.PodeGerenciarAgendasConsultas
 @RestController
 @RequestMapping("/consultas")
 public class ConsultaController {
