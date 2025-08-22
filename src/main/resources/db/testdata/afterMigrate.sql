@@ -17,6 +17,7 @@ delete from grupo;
 delete from permissao;
 delete from grupo_permissao;
 delete from grupo_usuario; 
+delete from oauth_client_details;
 
 set foreign_key_checks = 1;
 
@@ -37,6 +38,7 @@ alter table grupo auto_increment = 1;
 alter table permissao auto_increment = 1;
 alter table grupo_permissao auto_increment = 1;
 alter table grupo_usuario auto_increment = 1;
+alter table oauth_client_details auto_increment = 1;
 
 INSERT INTO usuario (id, nome, email, senha, tipo, telefone)
 VALUES 
@@ -321,3 +323,12 @@ values (1, 'Dinheiro'),
 
 insert into agenda(id, medico_id, data, hora_inicio, hora_fim)
 values(1, 1, '2025-05-20', '15:00:00', '15:30:00');
+
+insert into oauth_client_details (
+  client_id, resource_ids, client_secret, 
+  scope, authorized_grant_types, web_server_redirect_uri, authorities,
+  access_token_validity, refresh_token_validity, autoapprove
+)
+values ('clinica-medica-web', null, '$2a$12$qFtfg7Lf8Fe.ovOhvB3P7edCJT0x2jbn/hZ1dZ7TgljZ3IeCXnvFK',
+  'READ,WRITE', 'password,authorization_code,refresh_token', 'http://localhost:8089',
+   null, 60 * 60 * 24 * 5, 60 * 60 * 24 * 10, true);
