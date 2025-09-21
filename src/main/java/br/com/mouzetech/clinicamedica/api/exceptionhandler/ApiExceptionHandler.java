@@ -9,6 +9,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
@@ -36,7 +37,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@Autowired
 	private MessageSource messageSource;
-	
+
 	@ExceptionHandler(EntidadeNaoEncontradaException.class)
 	public ResponseEntity<Object> handleEntidadeNaoEncontrada(EntidadeNaoEncontradaException ex, WebRequest request) {
 
@@ -47,7 +48,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 		return this.handleExceptionInternal(ex, problem, new HttpHeaders(), statusHttp, request);
 	}
-	
+
 	@ExceptionHandler(AccessDeniedException.class)
 	public ResponseEntity<?> tratarAccessDeniedException(AccessDeniedException ex, WebRequest request) {
 
@@ -56,22 +57,23 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 		return this.handleExceptionInternal(ex, problem, new HttpHeaders(), HttpStatus.FORBIDDEN, request);
 	}
-	
+
 	@ExceptionHandler(DataIntegrityViolationException.class)
-	public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request) {
+	public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex,
+			WebRequest request) {
 
 		HttpStatus statusHttp = HttpStatus.INTERNAL_SERVER_ERROR;
 
-		Problem problem = this.createProblemBuilder(statusHttp, MSG_GENERICA_ERRO_USUARIO_FINAL, ProblemType.ERRO_DE_SISTEMA)
-				.build();
+		Problem problem = this
+				.createProblemBuilder(statusHttp, MSG_GENERICA_ERRO_USUARIO_FINAL, ProblemType.ERRO_DE_SISTEMA).build();
 
 		return this.handleExceptionInternal(ex, problem, new HttpHeaders(), statusHttp, request);
 	}
-	
+
 	@Override
 	protected ResponseEntity<Object> handleMissingPathVariable(MissingPathVariableException ex, HttpHeaders headers,
-			HttpStatus status, WebRequest request) {
-		
+			HttpStatusCode status, WebRequest request) {
+
 		String userMessage = "O parâmetro '" + ex.getVariableName() + "' mapeado não é válido";
 
 		Problem problem = this.createProblemBuilder(status, ex.getMessage(), ProblemType.ERRO_NEGOCIO)
@@ -79,10 +81,10 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 		return this.handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
 	}
-	
+
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-			HttpHeaders headers, HttpStatus status, WebRequest request) {
+			HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
 		Problem problemBuilder = this
 				.createProblemBuilder(status, MSG_ERRO_DE_VALIDACAO_DE_DADOS, ProblemType.DADOS_INVALIDOS)
@@ -104,7 +106,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 		return this.handleExceptionInternal(ex, problemBuilder, headers, status, request);
 	}
-	
+
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
 	public ResponseEntity<Object> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex,
 			WebRequest request) {
@@ -120,7 +122,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 								.userMessage(mensagemExcecao).build(),
 						new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
 	}
-	
+
 	@ExceptionHandler(NegocioException.class)
 	public ResponseEntity<Object> handleNegocioException(NegocioException ex, WebRequest request) {
 
@@ -130,40 +132,40 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 								.userMessage(ex.getMessage()).build(),
 						new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
 	}
-	
+
 	@Override
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
-			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		
+			HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+
 		ProblemType problemType = ProblemType.DADOS_INVALIDOS;
-		
+
 		Throwable causa = ex.getCause();
-		
-		if(causa instanceof InvalidFormatException ife) {
+
+		if (causa instanceof InvalidFormatException ife) {
 			return this.handleInvalidFormatException(ife, headers, status, request, problemType);
 		}
-		
+
 		Problem problemBuilder = this.createProblemBuilder(status, MSG_ERRO_DE_VALIDACAO_DE_DADOS, problemType).build();
-		
+
 		return this.handleExceptionInternal(ex, problemBuilder, headers, status, request);
 	}
-	
-	private ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException ex,
-			HttpHeaders headers, HttpStatus status, WebRequest request, ProblemType problemType) {
-		
-		String userMessage = "O valor '" + ex.getValue() + "' não é aceito pelo tipo esperado '" + ex.getTargetType().getSimpleName() + "'";
-		
+
+	private ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException ex, HttpHeaders headers,
+			HttpStatusCode status, WebRequest request, ProblemType problemType) {
+
+		String userMessage = "O valor '" + ex.getValue() + "' não é aceito pelo tipo esperado '"
+				+ ex.getTargetType().getSimpleName() + "'";
+
 		Problem problem = this.createProblemBuilder(status, MSG_ERRO_DE_VALIDACAO_DE_DADOS, problemType)
-				.userMessage(userMessage)
-				.build();
-		
+				.userMessage(userMessage).build();
+
 		return this.handleExceptionInternal(ex, problem, headers, status, request);
-		
+
 	}
 
 	@Override
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
-			HttpStatus status, WebRequest request) {
+			HttpStatusCode status, WebRequest request) {
 
 		if (body == null) {
 
@@ -181,7 +183,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		return super.handleExceptionInternal(ex, body, headers, status, request);
 	}
 
-	private Problem.ProblemBuilder createProblemBuilder(HttpStatus status, String detail, ProblemType problemType) {
+	private Problem.ProblemBuilder createProblemBuilder(HttpStatusCode status, String detail, ProblemType problemType) {
 		return Problem.builder().status(status.value()).title(problemType.getTitle()).detail(detail).userMessage(detail)
 				.type(problemType.getType()).timeStamp(OffsetDateTime.now());
 	}

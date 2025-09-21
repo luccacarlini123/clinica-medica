@@ -2,8 +2,6 @@ package br.com.mouzetech.clinicamedica.api.controller;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +20,7 @@ import br.com.mouzetech.clinicamedica.core.security.resourceserver.CheckSecurity
 import br.com.mouzetech.clinicamedica.domain.model.Permissao;
 import br.com.mouzetech.clinicamedica.domain.repository.PermissaoRepository;
 import br.com.mouzetech.clinicamedica.domain.service.PermissaoService;
+import jakarta.validation.Valid;
 
 @CheckSecurity.PodeGerenciarCadastros
 @RestController

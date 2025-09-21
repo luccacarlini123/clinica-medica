@@ -3,8 +3,6 @@ package br.com.mouzetech.clinicamedica.api.controller;
 import java.time.LocalDate;
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +18,7 @@ import br.com.mouzetech.clinicamedica.api.model.input.AgendaInput;
 import br.com.mouzetech.clinicamedica.api.model.representation.AgendaModel;
 import br.com.mouzetech.clinicamedica.core.security.resourceserver.CheckSecurity;
 import br.com.mouzetech.clinicamedica.domain.service.AgendaService;
+import jakarta.validation.Valid;
 
 @CheckSecurity.PodeGerenciarAgendasConsultas
 @RestController

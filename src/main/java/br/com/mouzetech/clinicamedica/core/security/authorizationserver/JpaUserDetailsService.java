@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -30,6 +31,6 @@ public class JpaUserDetailsService implements UserDetailsService {
 		var permissoes = usuario.getGrupos().stream().flatMap(grupo -> grupo.getPermissoes().stream())
 				.map(permissao -> new SimpleGrantedAuthority(permissao.getNome())).collect(Collectors.toList());
 
-		return new AuthUser(usuario, permissoes);
+		return new User(usuario.getEmail(), usuario.getSenha(), permissoes);
 	}
 }

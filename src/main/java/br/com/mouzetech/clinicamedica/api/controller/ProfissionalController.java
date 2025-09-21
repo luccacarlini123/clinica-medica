@@ -2,8 +2,6 @@ package br.com.mouzetech.clinicamedica.api.controller;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,6 +22,7 @@ import br.com.mouzetech.clinicamedica.core.security.resourceserver.CheckSecurity
 import br.com.mouzetech.clinicamedica.domain.model.Profissional;
 import br.com.mouzetech.clinicamedica.domain.repository.ProfissionalRepository;
 import br.com.mouzetech.clinicamedica.domain.service.ProfissionalService;
+import jakarta.validation.Valid;
 
 @CheckSecurity.PodeGerenciarProfissionais
 @RestController

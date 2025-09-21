@@ -14,10 +14,8 @@ public class ClinicaMedicaApplication {
 		TimeZone.setDefault(TimeZone.getTimeZone("America/Sao_Paulo"));
 		
 		var app = new SpringApplication(ClinicaMedicaApplication.class);
-		app.addListeners(new Base64ProtocolResolver());
+		app.addInitializers(context -> context.addProtocolResolver(new Base64ProtocolResolver()));
 		app.run(args);
-
-		SpringApplication.run(ClinicaMedicaApplication.class, args);
 	}
 
 }

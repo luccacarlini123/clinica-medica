@@ -2,8 +2,6 @@ package br.com.mouzetech.clinicamedica.api.controller;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,6 +22,7 @@ import br.com.mouzetech.clinicamedica.core.security.resourceserver.CheckSecurity
 import br.com.mouzetech.clinicamedica.domain.model.Convenio;
 import br.com.mouzetech.clinicamedica.domain.repository.ConvenioRepository;
 import br.com.mouzetech.clinicamedica.domain.service.ConvenioService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/convenios")

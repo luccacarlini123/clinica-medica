@@ -2,10 +2,6 @@ package br.com.mouzetech.clinicamedica.core.security.resourceserver;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.AuthenticationException;
@@ -15,6 +11,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.mouzetech.clinicamedica.api.exceptionhandler.Problem;
 import br.com.mouzetech.clinicamedica.api.exceptionhandler.ProblemType;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 public class CustomAuthenticationEntrypoint implements AuthenticationEntryPoint {

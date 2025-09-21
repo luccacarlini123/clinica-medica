@@ -1,91 +1,138 @@
 package br.com.mouzetech.clinicamedica.core.security.authorizationserver;
 
-import java.security.KeyPair;
-import java.security.interfaces.RSAPublicKey;
-import java.util.Arrays;
+import java.io.InputStream;
+import java.security.KeyStore;
+import java.util.HashSet;
+import java.util.Set;
 
-import javax.sql.DataSource;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
-import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
-import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
-import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
-import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.core.io.Resource;
+import org.springframework.jdbc.core.JdbcOperations;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationConsentService;
+import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
+import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
+import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
+import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
-import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.KeyUse;
 import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.SecurityContext;
+
+import br.com.mouzetech.clinicamedica.domain.model.Usuario;
+import br.com.mouzetech.clinicamedica.domain.repository.UsuarioRepository;
 
 @Configuration
-@EnableAuthorizationServer
-public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
+@EnableWebSecurity
+public class AuthorizationServerConfig {
 
-	@Autowired
-	private UserDetailsService userDetailsService;
+	@Bean
+	@Order(Ordered.HIGHEST_PRECEDENCE)
+	SecurityFilterChain securityFilterChainAuthServer(HttpSecurity http) throws Exception {
+		
+		OAuth2AuthorizationServerConfigurer authServerConfigurer =
+				new OAuth2AuthorizationServerConfigurer();
+		
+		authServerConfigurer.authorizationEndpoint(customizer -> customizer.consentPage("/oauth2/consent"));
 
-	@Autowired
-	private AuthenticationManager authenticationManager;
-
-	@Autowired
-	private JwtKeyStoreProperties jwtKeyStoreProperties;
-
-	@Autowired
-	private DataSource dataSource;
-
-	@Override
-	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-		clients.jdbc(this.dataSource);
+		RequestMatcher requestMatcher = authServerConfigurer.getEndpointsMatcher();
+		
+		http.securityMatcher(requestMatcher)
+		.authorizeHttpRequests(authorizeRequest ->
+			authorizeRequest.anyRequest().authenticated()
+		)
+		.csrf(csrf -> csrf.ignoringRequestMatchers(requestMatcher))
+		.formLogin(Customizer.withDefaults())
+		.exceptionHandling(exceptions ->
+			exceptions.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login")))
+		.apply(authServerConfigurer);
+		
+		return http.formLogin(customizer -> customizer.loginPage("/login")).build();
 	}
-
-	@Override
-	public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
-		security.checkTokenAccess("isAuthenticated");
-	}
-
-	@Override
-	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-
-		var enhancerTokenChain = new TokenEnhancerChain();
-		enhancerTokenChain
-				.setTokenEnhancers(Arrays.asList(new JwtCustomClaimsTokenEnhancer(), jwtAccessTokenConverter()));
-
-		endpoints.reuseRefreshTokens(false).userDetailsService(this.userDetailsService)
-				.authenticationManager(this.authenticationManager).accessTokenConverter(jwtAccessTokenConverter())
-				.tokenEnhancer(enhancerTokenChain);
+	
+	@Bean
+	AuthorizationServerSettings authServerSettings(ClinicaMedicaSecurityProperties properties) {
+		return AuthorizationServerSettings.builder().issuer(properties.getAuthServerUrl()).build();
 	}
 
 	@Bean
-	JWKSet jwkSet() {
-		RSAKey.Builder builder = new RSAKey.Builder((RSAPublicKey) getKeyPair().getPublic()).keyUse(KeyUse.SIGNATURE)
-				.algorithm(JWSAlgorithm.RS256).keyID("clinicamedica-api-keyID");
-
-		return new JWKSet(builder.build());
+	RegisteredClientRepository registeredClientRepository(JdbcOperations jdbcOperations) {
+		
+		return new JdbcRegisteredClientRepository(jdbcOperations);
 	}
-
+	
 	@Bean
-	JwtAccessTokenConverter jwtAccessTokenConverter() {
-		JwtAccessTokenConverter jwtAccessTokenConverter = new JwtAccessTokenConverter();
-
-//		utilizado para assinar chave simétrica
-//		jwtAccessTokenConverter.setSigningKey("mouzetech-securitymouzetech-securitymouzetech-securitymouzetech-securitymouzetech-securitymouzetech-security");
-
-		jwtAccessTokenConverter.setKeyPair(getKeyPair());
-
-		return jwtAccessTokenConverter;
+	OAuth2TokenCustomizer<JwtEncodingContext> jwtTokenCustomizer(UsuarioRepository usuarioRepository) {
+		return context -> {
+			
+			Authentication authentication = context.getPrincipal();
+			
+			if(authentication.getPrincipal() instanceof User user) {
+				
+				Usuario usuario = usuarioRepository.findByEmail(user.getUsername()).orElseThrow();
+				
+				Set<String> authorities = new HashSet<>();
+				
+				user.getAuthorities().forEach(authoritie ->
+						authorities.add(authoritie.getAuthority()));
+				
+				context.getClaims().claim("usuario_id", usuario.getId().toString());
+				
+				context.getClaims().claim("authorities", authorities);
+			}
+		};
 	}
-
-	private KeyPair getKeyPair() {
-		return new KeyStoreKeyFactory(this.jwtKeyStoreProperties.getJksResource(),
-				this.jwtKeyStoreProperties.getJksStorePass().toCharArray())
-				.getKeyPair(this.jwtKeyStoreProperties.getKeyPairAlias());
+	
+	@Bean
+	OAuth2AuthorizationService oAuth2AuthorizationService(JdbcOperations jdbcOperations,
+			RegisteredClientRepository registeredClientRepository) {
+		return new JdbcOAuth2AuthorizationService(jdbcOperations, registeredClientRepository);
+	}
+	
+	@Bean
+	JWKSource<SecurityContext> jwkSourceBean(JwtKeyStoreProperties keySetProperties) throws Exception {
+		
+		char[] keyStorePass = keySetProperties.getJksStorePass().toCharArray();
+		
+		String keyPairAlias = keySetProperties.getKeyPairAlias();
+		
+		Resource jksLocation = keySetProperties.getJksResource();
+		
+		InputStream inputStream = jksLocation.getInputStream();
+		
+		KeyStore keyStore = KeyStore.getInstance("JKS");
+		keyStore.load(inputStream, keyStorePass);
+		
+		RSAKey rsaKey = RSAKey.load(keyStore, keyPairAlias, keyStorePass);
+		
+		return new ImmutableJWKSet<>(new JWKSet(rsaKey));
+	}
+	
+	@Bean
+	OAuth2AuthorizationConsentService oAuth2AuthorizationConsentService(JdbcOperations jdbcOPerations,
+			RegisteredClientRepository registeredClientRepository) {
+		return new JdbcOAuth2AuthorizationConsentService(jdbcOPerations, registeredClientRepository);
+	}
+	
+	@Bean
+	OAuth2AuthorizationQueryService oAuth2AuthorizationQueryService(JdbcOperations jdbcOperations, RegisteredClientRepository registeredClientRepository) {
+		return new JdbcOAuth2AuthorizationQueryService(jdbcOperations, registeredClientRepository);
 	}
 }

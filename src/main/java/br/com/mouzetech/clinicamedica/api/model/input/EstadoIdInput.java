@@ -1,7 +1,6 @@
 package br.com.mouzetech.clinicamedica.api.model.input;
 
-import javax.validation.constraints.NotNull;
-
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 

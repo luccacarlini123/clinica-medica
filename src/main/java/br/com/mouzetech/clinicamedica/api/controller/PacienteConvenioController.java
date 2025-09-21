@@ -2,8 +2,6 @@ package br.com.mouzetech.clinicamedica.api.controller;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +15,7 @@ import br.com.mouzetech.clinicamedica.api.model.input.PacienteConvenioInput;
 import br.com.mouzetech.clinicamedica.api.model.representation.PacienteConvenioModel;
 import br.com.mouzetech.clinicamedica.core.security.resourceserver.CheckSecurity;
 import br.com.mouzetech.clinicamedica.domain.service.PacienteConvenioService;
+import jakarta.validation.Valid;
 
 @CheckSecurity.PodeGerenciarPacientes
 @RestController

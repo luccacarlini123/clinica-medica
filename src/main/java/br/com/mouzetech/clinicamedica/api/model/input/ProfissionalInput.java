@@ -1,9 +1,8 @@
 package br.com.mouzetech.clinicamedica.api.model.input;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
 import br.com.mouzetech.clinicamedica.domain.model.TipoGeneroPessoa;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 

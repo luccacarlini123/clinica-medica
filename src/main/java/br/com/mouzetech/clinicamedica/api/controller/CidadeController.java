@@ -2,8 +2,6 @@ package br.com.mouzetech.clinicamedica.api.controller;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,6 +24,7 @@ import br.com.mouzetech.clinicamedica.domain.model.Cidade;
 import br.com.mouzetech.clinicamedica.domain.repository.CidadeRepository;
 import br.com.mouzetech.clinicamedica.domain.service.CidadeService;
 import br.com.mouzetech.clinicamedica.domain.service.EstadoService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/cidades")

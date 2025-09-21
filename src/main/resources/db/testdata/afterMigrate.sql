@@ -17,7 +17,7 @@ delete from grupo;
 delete from permissao;
 delete from grupo_permissao;
 delete from grupo_usuario; 
-delete from oauth_client_details;
+delete from oauth2_registered_client;
 
 set foreign_key_checks = 1;
 
@@ -38,7 +38,7 @@ alter table grupo auto_increment = 1;
 alter table permissao auto_increment = 1;
 alter table grupo_permissao auto_increment = 1;
 alter table grupo_usuario auto_increment = 1;
-alter table oauth_client_details auto_increment = 1;
+alter table oauth2_registered_client auto_increment = 1;
 
 INSERT INTO usuario (id, nome, email, senha, tipo, telefone)
 VALUES 
@@ -313,7 +313,7 @@ INSERT INTO paciente (
 ) VALUES 
 (1, null, '1990-05-14', '12345678900', 'MASCULINO', 'Carlos Eduardo Silva', null),
 (2, null, '1985-09-22', '98765432100', 'FEMININO', 'Mariana Lopes Pereira', null);
-
+	
 insert into forma_pagamento(id, descricao)
 values (1, 'Dinheiro'),
 (2, 'Cartão de crédito'),
@@ -324,11 +324,6 @@ values (1, 'Dinheiro'),
 insert into agenda(id, medico_id, data, hora_inicio, hora_fim)
 values(1, 1, '2025-05-20', '15:00:00', '15:30:00');
 
-insert into oauth_client_details (
-  client_id, resource_ids, client_secret, 
-  scope, authorized_grant_types, web_server_redirect_uri, authorities,
-  access_token_validity, refresh_token_validity, autoapprove
-)
-values ('clinica-medica-web', null, '$2a$12$qFtfg7Lf8Fe.ovOhvB3P7edCJT0x2jbn/hZ1dZ7TgljZ3IeCXnvFK',
-  'READ,WRITE', 'password,authorization_code,refresh_token', 'http://localhost:8089',
-   null, 60 * 60 * 24 * 5, 60 * 60 * 24 * 10, true);
+INSERT INTO clinicamedica.oauth2_registered_client
+(id, client_id, client_id_issued_at, client_secret, client_secret_expires_at, client_name, client_authentication_methods, authorization_grant_types, redirect_uris, scopes, client_settings, token_settings)
+VALUES('1', 'frontEndClinica', '2025-09-20 23:43:32', '$2a$10$wdHRcs2EjGdEPsdUHGJf2upS1tnHmePTooHZIn0R3LboVx4eGXDIm', NULL, '1', 'client_secret_basic', 'refresh_token,authorization_code', 'http://127.0.0.1:8082', 'READ,WRITE', '{"@class":"java.util.Collections$UnmodifiableMap","settings.client.require-proof-key":false,"settings.client.require-authorization-consent":true}', '{"@class":"java.util.Collections$UnmodifiableMap","settings.token.reuse-refresh-tokens":true,"settings.token.id-token-signature-algorithm":["org.springframework.security.oauth2.jose.jws.SignatureAlgorithm","RS256"],"settings.token.access-token-time-to-live":["java.time.Duration",900.000000000],"settings.token.access-token-format":{"@class":"org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat","value":"self-contained"},"settings.token.refresh-token-time-to-live":["java.time.Duration",1800.000000000],"settings.token.authorization-code-time-to-live":["java.time.Duration",300.000000000]}');   
