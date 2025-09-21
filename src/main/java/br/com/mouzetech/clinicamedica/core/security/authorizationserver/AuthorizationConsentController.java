@@ -33,7 +33,7 @@ public class AuthorizationConsentController {
 
 		RegisteredClient client = this.registeredClientRepository.findByClientId(clientId);
 
-		if (client == null) {
+		if (client == null || principal == null) {
 			throw new AccessDeniedException(String.format("Não foi encontrado o %s armazenado", clientId));
 		}
 

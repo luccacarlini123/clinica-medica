@@ -29,6 +29,10 @@ public class AuthorizedClientController {
 	@GetMapping("/oauth2/authorized-clients")
 	public String getAuthorizedClients(Principal principal, Model model) {
 		
+		if(principal == null) {
+			throw new AccessDeniedException(String.format("Usuário não encontrado"));
+		}
+		
 		List<RegisteredClient> clients = this.oAuth2AuthorizationQueryService.listClientsWithConsent(principal.getName());
 		
 		model.addAttribute("clients", clients);
@@ -42,7 +46,7 @@ public class AuthorizedClientController {
 		
 		RegisteredClient registeredClient = this.clientRepository.findByClientId(clientId);
 		
-		if(registeredClient == null) {
+		if(registeredClient == null || principal == null) {
 			throw new AccessDeniedException(String.format("Cliente %s não encontrado", clientId));
 		}
 
@@ -50,7 +54,6 @@ public class AuthorizedClientController {
 
 		var authorizationsClient = this.oAuth2AuthorizationQueryService.listAuthorizations(principal.getName(),
 				registeredClient.getId());
-
 		
 		
 		if (consent != null) {
