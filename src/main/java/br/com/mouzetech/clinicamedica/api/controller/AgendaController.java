@@ -42,9 +42,9 @@ public class AgendaController {
 
 	@GetMapping("/medicos/{medicoId}")
 	public List<AgendaModel> buscarPorMedicoEOpcionalmenteData(@PathVariable("medicoId") Long medicoId,
-			@RequestParam(name = "data", required = false) LocalDate data) {
+			@RequestParam(name = "datainicio", required = false) LocalDate dataInicio, @RequestParam(name = "datafim", required = false) LocalDate dataFim) {
 
 		return this.agendaAssembler
-				.toCollectionModel(this.agendaService.buscarPorMedicoEOpcionalmenteData(medicoId, data));
+				.toCollectionModel(this.agendaService.buscarPorMedicoEOpcionalmenteData(medicoId, dataInicio, dataFim));
 	}
 }

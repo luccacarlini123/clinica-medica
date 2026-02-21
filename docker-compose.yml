@@ -1,0 +1,29 @@
+version: "3.9"
+
+networks:
+  clinicamedica-network:
+    external: true
+    driver: bridge
+    
+services:
+  clinicamedica-mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: 92682802
+    ports:
+      - "3316:3306"
+    networks:
+      - clinicamedica-network
+      
+  clinicamedica-api:
+    image: clinicamedica-api:1.0.0
+    command: ["/wait-for-it.sh", "clinicamedica-mysql:3306", "-t", "20", "--", "java", "-jar", "clinicamedica-api.jar"]
+    environment:
+      DB_HOST: "clinicamedica-mysql"
+      AUTH_SERVER: "clinicamedica-auth"
+    ports:
+      - 8080:8080 
+    networks:
+      - clinicamedica-network
+    depends_on:
+      - clinicamedica-mysql

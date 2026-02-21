@@ -1,4 +1,4 @@
-package br.com.mouzetech.clinicamedica.core.security.authorizationserver;
+package br.com.mouzetech.clinicamedica.core.security.resourceserver;
 
 import java.util.Collections;
 
@@ -14,7 +14,7 @@ import org.springframework.web.filter.CorsFilter;
 public class CorsConfig {
 
 	@Bean
-	FilterRegistrationBean<CorsFilter> corsFilterRegistrationBean() {
+	FilterRegistrationBean<CorsFilter> corsFilterRegistrationoBean() {
 		CorsConfiguration config = new CorsConfiguration();
 		config.setAllowCredentials(false);
 		config.setAllowedOrigins(Collections.singletonList("*"));
@@ -22,7 +22,7 @@ public class CorsConfig {
 		config.setAllowedHeaders(Collections.singletonList("*"));
 
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/oauth/token", config);
+		source.registerCorsConfiguration("/**", config);
 
 		FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>();
 		bean.setFilter(new CorsFilter(source));
@@ -30,5 +30,4 @@ public class CorsConfig {
 
 		return bean;
 	}
-
 }

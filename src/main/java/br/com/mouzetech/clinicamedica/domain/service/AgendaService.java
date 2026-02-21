@@ -31,7 +31,7 @@ public class AgendaService {
 		
 		agenda.setMedico(this.profissionalService.buscarPorIdOuFalhar(agenda.getMedico().getId()));
 		
-		validarAntesDeAgendar(agenda);
+		this.validarAntesDeAgendar(agenda);
 
 		return agendaRepository.save(agenda);
 	}
@@ -54,11 +54,23 @@ public class AgendaService {
 		}
 	}
 	
-	public List<Agenda> buscarPorMedicoEOpcionalmenteData(Long medicoId, LocalDate data) {
+	public List<Agenda> buscarPorMedicoEOpcionalmenteData(Long medicoId, LocalDate dataInicio, LocalDate dataFim) {
 
+		this.validarDatasParaPesquisa(dataInicio, dataFim);
+		
 		Profissional profissional = this.profissionalService.buscarPorIdOuFalhar(medicoId);
 		
-		return this.agendaRepository.buscarPorMedicoEOpcionalmenteData(profissional, data);
+		return this.agendaRepository.buscarPorMedicoEOpcionalmenteData(profissional.getId(), dataInicio, dataFim);
+	}
+
+	private void validarDatasParaPesquisa(LocalDate dataInicio, LocalDate dataFim) {
+		if(dataInicio == null || dataFim == null) {
+			throw new NegocioException("Para buscar por data é obrigatório informar a data de início e a data fim");
+		}
+		
+		if(dataInicio.isAfter(dataFim)) {
+			throw new NegocioException("A data de início deve ser menor ou igual a data fim");
+		}
 	}
 
 }

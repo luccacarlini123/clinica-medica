@@ -2,6 +2,7 @@ package br.com.mouzetech.clinicamedica.domain.repository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -9,8 +10,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import br.com.mouzetech.clinicamedica.domain.model.Agenda;
-import java.util.List;
-import br.com.mouzetech.clinicamedica.domain.model.Profissional;
 
 
 @Repository
@@ -31,9 +30,11 @@ public interface AgendaRepository extends JpaRepository<Agenda, Long> {
 	
 	@Query("""
 			FROM Agenda a
-			WHERE a.medico = :medico
-			  AND (:data IS NULL OR :data = a.data)
+			WHERE a.medico.id = :medicoId
+			  AND ((:dataInicio IS NULL AND :dataFim IS NULL)
+			  		OR a.data between :dataInicio and :dataFim)
 			""")
-	List<Agenda> buscarPorMedicoEOpcionalmenteData(@Param("medico") Profissional medico, @Param("data") LocalDate data);
+	List<Agenda> buscarPorMedicoEOpcionalmenteData(@Param("medicoId") Long medicoId,
+			@Param("dataInicio") LocalDate dataInicio, @Param("dataFim") LocalDate dataFim);
 	
 }

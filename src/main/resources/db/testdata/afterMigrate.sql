@@ -45,7 +45,8 @@ VALUES
   (1, 'Lucca Carlini', 'lucca.adm@clinica.com', '$2a$12$viMi16ApU5PCRfLgEYa9qejWdO01m5FrSHjZIHTlWqTHJVcAU4JVS', 'ADMIN', 21992202450),
   (2, 'João Souza', 'joao.ger@clinica.com', '$2a$12$viMi16ApU5PCRfLgEYa9qejWdO01m5FrSHjZIHTlWqTHJVcAU4JVS', 'PROFISSIONAL', 21992202450),
   (3, 'Mariana Oliveira', 'mariana.atd@clinica.com', '$2a$12$viMi16ApU5PCRfLgEYa9qejWdO01m5FrSHjZIHTlWqTHJVcAU4JVS', 'RECEPCIONISTA', null),
-  (4, 'Carlos Mendes', 'carlos.prp@clinica.com', '$2a$12$viMi16ApU5PCRfLgEYa9qejWdO01m5FrSHjZIHTlWqTHJVcAU4JVS', 'PROFISSIONAL', 21996587803);
+  (4, 'Carlos Mendes', 'carlos.prp@clinica.com', '$2a$12$viMi16ApU5PCRfLgEYa9qejWdO01m5FrSHjZIHTlWqTHJVcAU4JVS', 'PROFISSIONAL', 21996587803),
+  (5, 'Laisa Gostosinha', 'laisa.dlc@clinica.com', '$2a$12$viMi16ApU5PCRfLgEYa9qejWdO01m5FrSHjZIHTlWqTHJVcAU4JVS', 'PROFISSIONAL', 21996582658);
 
 INSERT INTO grupo (id, nome)
 VALUES
@@ -325,5 +326,9 @@ insert into agenda(id, medico_id, data, hora_inicio, hora_fim)
 values(1, 1, '2025-05-20', '15:00:00', '15:30:00');
 
 INSERT INTO clinicamedica.oauth2_registered_client
-(id, client_id, client_id_issued_at, client_secret, client_secret_expires_at, client_name, client_authentication_methods, authorization_grant_types, redirect_uris, scopes, client_settings, token_settings)
-VALUES('1', 'frontEndClinica', '2025-09-20 23:43:32', '$2a$10$wdHRcs2EjGdEPsdUHGJf2upS1tnHmePTooHZIn0R3LboVx4eGXDIm', NULL, 'frontEndClinica', 'client_secret_basic', 'refresh_token,authorization_code', 'http://127.0.0.1:8082', 'READ,WRITE', '{"@class":"java.util.Collections$UnmodifiableMap","settings.client.require-proof-key":false,"settings.client.require-authorization-consent":true}', '{"@class":"java.util.Collections$UnmodifiableMap","settings.token.reuse-refresh-tokens":true,"settings.token.id-token-signature-algorithm":["org.springframework.security.oauth2.jose.jws.SignatureAlgorithm","RS256"],"settings.token.access-token-time-to-live":["java.time.Duration",900.000000000],"settings.token.access-token-format":{"@class":"org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat","value":"self-contained"},"settings.token.refresh-token-time-to-live":["java.time.Duration",1800.000000000],"settings.token.authorization-code-time-to-live":["java.time.Duration",300.000000000]}');   
+(id, client_id, client_id_issued_at, client_secret, client_secret_expires_at, client_name, client_authentication_methods, authorization_grant_types, redirect_uris,
+ scopes, client_settings, token_settings)
+VALUES('1', 'frontEndClinica', '2025-09-20 23:43:32', '$2a$10$wdHRcs2EjGdEPsdUHGJf2upS1tnHmePTooHZIn0R3LboVx4eGXDIm', NULL, 'frontEndClinica', 'client_secret_basic',
+ 'refresh_token,authorization_code', 'http://192.168.3.42:4200', 'openid,profile,email,offline_access,READ,WRITE',
+  '{"@class":"java.util.Collections$UnmodifiableMap","settings.client.require-proof-key":false,"settings.client.require-authorization-consent":true}',
+  '{"@class":"java.util.Collections$UnmodifiableMap","settings.token.reuse-refresh-tokens":false,"settings.token.id-token-signature-algorithm":["org.springframework.security.oauth2.jose.jws.SignatureAlgorithm","RS256"],"settings.token.access-token-time-to-live":["java.time.Duration",900.000000000],"settings.token.access-token-format":{"@class":"org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat","value":"self-contained"},"settings.token.refresh-token-time-to-live":["java.time.Duration",1800.000000000],"settings.token.authorization-code-time-to-live":["java.time.Duration",300.000000000]}');
